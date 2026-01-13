@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>貸借対照表（流動性配列法）</title>
+
+  <!-- PWA用 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffffff">
+
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .column {
+      width: 200px;
+      padding: 10px;
+      border: 2px solid #000;
+      margin: 0 10px;
+    }
+    .divider {
+      width: 10px;
+      background-color: gray;
+      transition: background-color 0.3s;
+    }
+    input {
+      width: 100px;
+      margin: 5px;
+    }
+    .title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>貸借対照表（流動性配列法）</h2>
+
+<div>
+  <label>B: <input type="number" id="b" value="1000"></label>
+  <label>O: <input type="number" id="o" value="10"></label>
+  <label>T1: <input type="number" id="t1" value="20"></label>
+  <label>T2: <input type="number" id="t2" value="30"></label>
+  <button onclick="calculate()">計算</button>
+  <button onclick="resetInputs()">リセット</button>
+</div>
+
+<div class="container">
+  <div class="column">
+    <div class="title">借方</div>
+    <p>流動資産: <span id="currentAssets">-</span></p>
+    <p>固定資産: <span id="fixedAssets">-</span></p>
+  </div>
+
+  <div class="divider" id="divider"></div>
+
+  <div class="column">
+    <div class="title">貸方</div>
+    <p>流動負債: <span id="currentLiabilities">-</span></p>
+    <p>資本金: <span id="capital">-</span></p>
+  </div>
+</div>
+
+<script>
+function calculate() {
+  const B = parseFloat(document.getElementById('b').value);
+  const O = parseFloat(document.getElementById('o').value);
+  const T1 = parseFloat(document.getElementById('t1').value);
+  const T2 = parseFloat(document.getElementById('t2').value);
+
+  const fixedAssets = B - O * T1;
+  const capital = B - O * T2;
+  const currentAssets = O * T1;
+  const currentLiabilities = O * T2;
+
+  document.getElementById('fixedAssets').textContent = fixedAssets;
+  document.getElementById('capital').textContent = capital;
+  document.getElementById('currentAssets').textContent = currentAssets;
+  document.getElementById('currentLiabilities').textContent = currentLiabilities;
+
+  const divider = document.getElementById('divider');
+  if (fixedAssets > capital) {
+    divider.style.backgroundColor = 'red';
+  } else if (fixedAssets < capital) {
+    divider.style.backgroundColor = 'blue';
+  } else {
+    divider.style.backgroundColor = 'gray';
+  }
+}
+
+function resetInputs() {
+  document.getElementById('b').value = '';
+  document.getElementById('o').value = '';
+  document.getElementById('t1').value = '';
+  document.getElementById('t2').value = '';
+
+  document.getElementById('fixedAssets').textContent = '-';
+  document.getElementById('capital').textContent = '-';
+  document.getElementById('currentAssets').textContent = '-';
+  document.getElementById('currentLiabilities').textContent = '-';
+  document.getElementById('divider').style.backgroundColor = 'gray';
+}
+
+/* Service Worker 登録 */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+
+</body>
+</html>
